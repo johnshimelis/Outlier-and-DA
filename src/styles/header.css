@@ -1,0 +1,90 @@
+/* Ensure the nav-user has relative positioning */
+.nav-user {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  /* Dropdown menu styles */
+  .dropdown-menu {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  }
+  
+  /* Show dropdown when active */
+  .dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  /* Dropdown items */
+  .dropdown-menu div {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background 0.3s;
+    white-space: nowrap;
+  }
+  
+  /* Hover effect */
+  .dropdown-menu div:hover {
+    background: #f0f0f0;
+  }
+  
+  /* Logout button */
+  .logout {
+    color: red;
+    font-weight: bold;
+  }
+  /* Language Dropdown Styles */
+.nav-language {
+  position: relative;
+  cursor: pointer;
+}
+
+.language-dropdown-menu {
+  position: absolute;
+  top: 100%; /* Position below the "Language" button */
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 120px;
+  padding: 8px 0;
+  z-index: 1000;
+}
+
+.language-option {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  color: black; /* Ensure text is black */
+  white-space: nowrap;
+}
+
+.language-code {
+  font-size: 12px;
+  margin-right: 8px;
+  color: #666; /* Smaller and lighter text for the code */
+}
+
+.language-name {
+  font-size: 14px;
+  font-weight: 500; /* Slightly bolder for the language name */
+}
+
+.language-option:hover {
+  background: #f0f0f0; /* Hover effect */
+}

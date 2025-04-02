@@ -1,0 +1,76 @@
+/* CAROUSEL STYLING */
+.full-width-carousel-container1 {
+    width: 100%;
+    height: 300px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.carousel {
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-inner {
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-item {
+    height: 50px; /* Adjust this value to your preferred height */
+    width: 100%;
+}
+
+.stretched-carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This will cover the area while maintaining aspect ratio */
+    object-position: center; /* Centers the image */
+}
+
+/* Carousel controls styling */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+}
+
+/* Carousel indicators */
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 992px) {
+    .carousel-item {
+        height: 400px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .carousel-item {
+        height: 300px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .carousel-item {
+        height: 250px;
+    }
+    
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
