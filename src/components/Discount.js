@@ -28,7 +28,7 @@ const Discount = () => {
 
   const fetchDiscountedProducts = useCallback(async () => {
     try {
-      const response = await axios.get("https://pa-gebeya-backend.onrender.com/api/products/discounted");
+      const response = await axios.get("https://outlier-and-da-backend.onrender.com/api/products/discounted");
       if (response.status !== 200) throw new Error("Failed to fetch products");
       const filteredDeals = response.data.filter(product => product.hasDiscount && product.discount > 0);
       setDeals(filteredDeals);
@@ -159,7 +159,7 @@ const Discount = () => {
 
     try {
       const response = await axios.post(
-        "https://pa-gebeya-backend.onrender.com/api/cart",
+        "https://outlier-and-da-backend.onrender.com/api/cart",
         cartItem,
         {
           headers: {
@@ -171,7 +171,7 @@ const Discount = () => {
 
       if (response.status === 200) {
         toast.success(`${product.name} added to the cart!`);
-        const updatedCart = await axios.get("https://pa-gebeya-backend.onrender.com/api/cart", {
+        const updatedCart = await axios.get("https://outlier-and-da-backend.onrender.com/api/cart", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCartItems(updatedCart.data.items);
@@ -261,8 +261,8 @@ const Discount = () => {
                   <span className="sold-count">| {formatSoldCount(deal.sold)}</span>
                 </div>
                 <div className="card-pricing">
-                  <span className="calculated-price">ETB {calculatedPrice}</span>
-                  <span className="original-price">ETB {originalPrice}</span>
+                  <span className="calculated-price">$ {calculatedPrice}</span>
+                  <span className="original-price">$ {originalPrice}</span>
                   <span className="discount">{deal.discount}% OFF</span>
                 </div>
               </div>

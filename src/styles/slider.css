@@ -27,8 +27,8 @@
 
 .nav-slider-box {
   flex: 0 0 auto; /* Prevent shrinking */
-  width: 120px; /* Fixed width for a consistent circular shape */
-  height: 140px; /* Extra height to accommodate the text below */
+  width: 160px; /* Fixed width for a consistent circular shape */
+  height: 180px; /* Extra height to accommodate the text below */
   padding: 5px;
   display: flex;
   flex-direction: column;

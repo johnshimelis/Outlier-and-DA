@@ -26,7 +26,7 @@ const RecommendedDeals = () => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const response = await axios.get("https://pa-gebeya-backend.onrender.com/api/products");
+      const response = await axios.get("https://outlier-and-da-backend.onrender.com/api/products");
       const nonDiscountedProducts = response.data.filter(product => !product.discount);
       setDeals(nonDiscountedProducts);
       setShuffledDeals(shuffleArray(nonDiscountedProducts));
@@ -121,7 +121,7 @@ const RecommendedDeals = () => {
 
     try {
       const response = await axios.post(
-        "https://pa-gebeya-backend.onrender.com/api/cart",
+        "https://outlier-and-da-backend.onrender.com/api/cart",
         {
           userId,
           productId: product._id,
@@ -140,7 +140,7 @@ const RecommendedDeals = () => {
 
       if (response.status === 200) {
         toast.success(`${product.name} added to the cart!`);
-        const updatedCart = await axios.get("https://pa-gebeya-backend.onrender.com/api/cart", {
+        const updatedCart = await axios.get("https://outlier-and-da-backend.onrender.com/api/cart", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCartItems(updatedCart.data.items);
@@ -220,7 +220,7 @@ const RecommendedDeals = () => {
                 <span className="rating-number">| {deal.rating?.toFixed(1) || 0}</span>
                 <span className="sold-count">| {formatSoldCount(deal.sold || 0)}</span>
               </div>
-              <div className="card-price">ETB {deal.price?.toFixed(2)}</div>
+              <div className="card-price">$ {deal.price?.toFixed(2)}</div>
             </div>
           </div>
         ))}

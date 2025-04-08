@@ -109,7 +109,8 @@ const Checkout = () => {
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
     const fullName = user?.fullName || "Guest User";
-    const userId = user?.userId;
+    // Fix: Check for both _id and userId fields
+    const userId = user?._id || user?.userId;
   
     if (!userId) {
       console.error("❌ User ID is missing! Cannot proceed.");
@@ -119,7 +120,6 @@ const Checkout = () => {
     }
   
     console.log("✅ User ID:", userId);
-  
     // ✅ Retrieve and format order data
     const storedOrderData = localStorage.getItem("orderData");
     const orderData = storedOrderData ? JSON.parse(storedOrderData) : {};
@@ -187,7 +187,7 @@ const Checkout = () => {
     // ✅ Submit order
     try {
       console.log("🚀 Sending order data to backend...");
-      const response = await fetch("https://pa-gebeya-backend.onrender.com/api/orders", {
+      const response = await fetch("https://outlier-and-da-backend.onrender.com/api/orders", {
         method: "POST",
         body: formData,
       });
@@ -210,7 +210,7 @@ const Checkout = () => {
       }
   
       const orderId = submittedOrder?.id || "MissingOrderId";
-      const notificationResponse = await fetch("https://pa-gebeya-backend.onrender.com/api/users/notifications", {
+      const notificationResponse = await fetch("https://outlier-and-da-backend.onrender.com/api/users/notifications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -240,7 +240,7 @@ const Checkout = () => {
         total: submittedOrder.amount || 0,
       };
   
-      const userOrderResponse = await fetch("https://pa-gebeya-backend.onrender.com/api/users/orders/", {
+      const userOrderResponse = await fetch("https://outlier-and-da-backend.onrender.com/api/users/orders/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -263,7 +263,7 @@ const Checkout = () => {
       setTimeout(() => {
         // ✅ Clear cart after success message
         console.log(`🛒 Clearing cart for user ID: ${userId}...`);
-        const deleteCartURL = `https://pa-gebeya-backend.onrender.com/api/cart/user/${userId}`;
+        const deleteCartURL = `https://outlier-and-da-backend.onrender.com/api/cart/user/${userId}`;
         const userToken = user?.token || localStorage.getItem("token");
   
         if (!userToken) {

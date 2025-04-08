@@ -10,7 +10,7 @@ const Carousel2 = () => {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const response = await axios.get("https://pa-gebeya-backend.onrender.com/api/ads/banner");
+        const response = await axios.get("https://outlier-and-da-backend.onrender.com/api/ads/banner");
         setBanners(response.data);
         
         // Initialize carousel after data loads

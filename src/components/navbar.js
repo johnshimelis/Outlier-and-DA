@@ -24,7 +24,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("https://pa-gebeya-backend.onrender.com/api/categories");
+        const response = await axios.get("https://outlier-and-da-backend.onrender.com/api/categories");
         if (response.status === 200) {
           setCategories(response.data); // Set fetched categories
         } else {

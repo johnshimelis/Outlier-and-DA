@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../components/CartContext"; // Import useCart hook
+import { useCart } from "../components/CartContext";
 import "../styles/header.css";
 import "../styles/style.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import flagImage from "../images/assets/Flag_of_Ethiopia.svg";
-import logoImage from "../images/assets/PA-Logos.png";
+import logoImage from "../images/assets/da.png";
+import logoImage1 from "../images/assets/da2.png";
+import logoImage2 from "../images/assets/outliers.png";
 import { createPortal } from "react-dom";
 
 const Header = () => {
@@ -14,11 +16,25 @@ const Header = () => {
   const totalItems = cartItems ? cartItems.length : 0;
 
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    try {
+      const storedUser = localStorage.getItem("user");
+      const token = localStorage.getItem("token");
+      if (storedUser && token) {
+        console.log("✅ User found in localStorage:", JSON.parse(storedUser));
+        return JSON.parse(storedUser);
+      }
+      return null;
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+      return null;
+    }
   });
 
   const [isLanguageDropdownVisible, setLanguageDropdownVisible] = useState(false);
+  const [currentLogo, setCurrentLogo] = useState(() => {
+    const logos = [logoImage, logoImage1, logoImage2];
+    return logos[Math.floor(Math.random() * logos.length)];
+  });
   const dropdownRef = useRef(null);
   const userRef = useRef(null);
   const languageRef = useRef(null);
@@ -26,7 +42,7 @@ const Header = () => {
   // Function to decode JWT safely
   const decodeToken = (token) => {
     try {
-      const payload = JSON.parse(atob(token.split(".")[1])); // Decode payload
+      const payload = JSON.parse(atob(token.split(".")[1]));
       return payload;
     } catch (error) {
       console.error("Invalid token:", error);
@@ -34,46 +50,75 @@ const Header = () => {
     }
   };
 
+  // Function to shuffle logos
+  const shuffleLogo = () => {
+    const logos = [logoImage, logoImage1, logoImage2];
+    const randomIndex = Math.floor(Math.random() * logos.length);
+    setCurrentLogo(logos[randomIndex]);
+  };
+
+  // Set up logo shuffling interval
+  useEffect(() => {
+    shuffleLogo();
+    const logoInterval = setInterval(shuffleLogo, 10 * 60 * 1000);
+    return () => clearInterval(logoInterval);
+  }, []);
+
   // Function to check user status and token expiration
   const checkUser = () => {
-    const storedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
+    try {
+      const storedUser = localStorage.getItem("user");
+      const token = localStorage.getItem("token");
 
-    if (storedUser && token) {
-      const parsedUser = JSON.parse(storedUser);
-      const decodedToken = decodeToken(token);
-      
-      if (decodedToken) {
-        const tokenExpiry = decodedToken.exp;
-        const currentTime = Math.floor(Date.now() / 1000);
+      console.log("🔍 Checking user status...");
+      console.log("Stored user:", storedUser);
+      console.log("Token exists:", !!token);
 
-        if (tokenExpiry && tokenExpiry < currentTime) {
-          handleLogout(); // Token expired, logout the user
+      if (storedUser && token) {
+        const parsedUser = JSON.parse(storedUser);
+        const decodedToken = decodeToken(token);
+        
+        if (decodedToken) {
+          const tokenExpiry = decodedToken.exp;
+          const currentTime = Math.floor(Date.now() / 1000);
+
+          if (tokenExpiry && tokenExpiry < currentTime) {
+            console.log("Token expired, logging out");
+            handleLogout();
+          } else {
+            console.log("✅ Valid user, setting user state:", parsedUser);
+            setUser(parsedUser);
+          }
         } else {
-          setUser(parsedUser); // Valid token, user is logged in
+          console.log("Invalid token, logging out");
+          handleLogout();
         }
       } else {
-        handleLogout(); // Invalid token, logout the user
+        console.log("No user or token, setting user to null");
+        setUser(null);
       }
-    } else {
-      setUser(null); // No user, logout
+    } catch (error) {
+      console.error("Error checking user status:", error);
+      setUser(null);
     }
   };
 
+  // Check user on mount and set up storage listener
   useEffect(() => {
-    checkUser(); // Check user status on component mount
-
-    const handleStorageChange = () => {
-      checkUser(); // Recheck on localStorage change (e.g., token expiry)
+    checkUser();
+    
+    const handleStorageChange = (event) => {
+      console.log("Storage event detected:", event.key);
+      if (event.key === "user" || event.key === "token") {
+        checkUser();
+      }
     };
 
     window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
+  // Check token expiration periodically
   useEffect(() => {
     const interval = setInterval(() => {
       const token = localStorage.getItem("token");
@@ -83,15 +128,15 @@ const Header = () => {
         const currentTime = Math.floor(Date.now() / 1000);
 
         if (tokenExpiry && tokenExpiry < currentTime) {
-          handleLogout(); // Token expired, logout user
+          handleLogout();
         }
       }
-    }, 60000); // Check every 60 seconds for token expiry
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch cart items when user logs in
+  // Fetch cart items when user changes
   useEffect(() => {
     if (user) { 
       fetchCartItems();
@@ -100,13 +145,19 @@ const Header = () => {
     }
   }, [user]);
 
+  // Debug user state changes
+  useEffect(() => {
+    console.log("Current user state:", user);
+    console.log("LocalStorage user:", localStorage.getItem("user"));
+  }, [user]);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     clearCart();
     setUser(null);
     console.log("Logging out, redirecting to /auth");
-    navigate("/auth"); // Redirect to /auth
+    navigate("/auth");
   };
 
   const toggleLanguageDropdown = () => {
@@ -131,13 +182,9 @@ const Header = () => {
       <section className="justify-content-center align-items-center d-flex">
         <div className="navbar" id="nav">
           <div className="nav-logo" onClick={() => navigate("/")}>
-            <img src={logoImage} alt="Logo" />
+            <img src={currentLogo} alt="Logo" />
           </div>
-          <div className="nav-location">
-            <div className="nav-location-icon">
-              <img src={flagImage} alt="ETH" />
-            </div>
-          </div>
+          
           <div className="nav-search text-nav">
             <form>
               <input type="text" placeholder="What are you looking for?" />
@@ -173,7 +220,14 @@ const Header = () => {
                 onMouseLeave={() => dropdownRef.current?.classList.remove("visible")}
               >
                 <span style={{ cursor: "pointer" }}>
-                  Welcome, {user.fullName} <i className="fas fa-user"></i>
+                  {user.fullName ? (
+                    `Welcome, ${user.fullName}`
+                  ) : (
+                    <span style={{ color: 'red' }}>
+                      User logged in (ID: {user._id})
+                    </span>
+                  )}
+                  <i className="fas fa-user"></i>
                 </span>
                 {createPortal(
                   <div className="dropdown-menu" ref={dropdownRef}>

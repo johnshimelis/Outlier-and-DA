@@ -81,13 +81,13 @@ const ProductDetails = () => {
     try {
       const categoryName = product.category;
       const categoryResponse = await axios.get(
-        `https://pa-gebeya-backend.onrender.com/api/categories/name/${encodeURIComponent(categoryName)}`
+        `https://outlier-and-da-backend.onrender.com/api/categories/name/${encodeURIComponent(categoryName)}`
       );
 
       if (categoryResponse.data && categoryResponse.data.categoryId) {
         const categoryId = categoryResponse.data.categoryId;
         const response = await axios.get(
-          `https://pa-gebeya-backend.onrender.com/api/products/category/${categoryId}`
+          `https://outlier-and-da-backend.onrender.com/api/products/category/${categoryId}`
         );
 
         if (response.status === 200 && Array.isArray(response.data)) {
@@ -142,7 +142,7 @@ const ProductDetails = () => {
 
     try {
       const response = await axios.post(
-        "https://pa-gebeya-backend.onrender.com/api/cart",
+        "https://outlier-and-da-backend.onrender.com/api/cart",
         cartItem,
         {
           headers: {

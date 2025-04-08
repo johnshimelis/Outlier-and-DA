@@ -7,8 +7,8 @@ import "../styles/cart.css";
 import { Carousel } from "react-responsive-carousel"; // Import Carousel component
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import carousel styles
 
-const API_BASE_URL = "https://pa-gebeya-backend.onrender.com/api/cart"; // Backend API URL
-const IMAGE_BASE_URL = "https://pa-gebeya-backend.onrender.com"; // Base URL for images
+const API_BASE_URL = "https://outlier-and-da-backend.onrender.com/api/cart"; // Backend API URL
+const IMAGE_BASE_URL = "https://outlier-and-da-backend.onrender.com"; // Base URL for images
 
 const Cart = () => {
   const { cartItems, setCartItems, removeFromCart, updateQuantity } = useCart();
@@ -71,7 +71,7 @@ const Cart = () => {
 
       // Send the new quantity to the backend
       const response = await axios.put(
-        `https://pa-gebeya-backend.onrender.com/api/cart/${productId}`,
+        `https://outlier-and-da-backend.onrender.com/api/cart/${productId}`,
         { quantity: newQuantity },
         {
           headers: { Authorization: `Bearer ${token}` },

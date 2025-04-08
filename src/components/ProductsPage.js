@@ -57,7 +57,7 @@ const ProductsPage = () => {
 
       try {
         const response = await axios.get(
-          `https://pa-gebeya-backend.onrender.com/api/products/category/${categoryId}`
+          `https://outlier-and-da-backend.onrender.com/api/products/category/${categoryId}`
         );
         
         if (response.status === 200) {
@@ -88,32 +88,30 @@ const ProductsPage = () => {
   };
 
   const handleAddToCart = async (product) => {
-    const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
-
-    if (!userId || !token) {
+  
+    if (!token) {
       toast.error("Please log in to add items to the cart");
       return;
     }
-
-    const productId = product._id;
-    if (!productId) {
-      toast.error("Error adding item to cart: Product ID missing");
-      return;
-    }
-
-    const cartItem = {
-      userId,
-      productId,
-      productName: product.name,
-      price: product.price,
-      quantity: 1,
-      img: product.imageUrls?.[0] || product.photo || '/default-product-image.jpg',
-    };
-
+  
     try {
+      const productId = product._id;
+      if (!productId) {
+        toast.error("Error adding item to cart: Product ID missing");
+        return;
+      }
+  
+      const cartItem = {
+        productId,
+        productName: product.name,
+        price: product.price,
+        quantity: 1,
+        img: product.imageUrls?.[0] || product.photo || '/default-product-image.jpg',
+      };
+  
       const response = await axios.post(
-        "https://pa-gebeya-backend.onrender.com/api/cart",
+        "https://outlier-and-da-backend.onrender.com/api/cart",
         cartItem,
         {
           headers: {
@@ -122,17 +120,23 @@ const ProductsPage = () => {
           },
         }
       );
-
+  
       if (response.status === 200) {
         toast.success(`${product.name} added to the cart!`);
+        // Optionally refresh cart items
         const updatedCart = await axios.get(
-          "https://pa-gebeya-backend.onrender.com/api/cart",
+          "https://outlier-and-da-backend.onrender.com/api/cart",
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setCartItems(updatedCart.data.items);
+        setCartItems(updatedCart.data.items || []);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || error.message);
+      console.error("Add to cart error:", error);
+      toast.error(
+        error.response?.data?.error || 
+        error.response?.data?.message || 
+        "Failed to add item to cart"
+      );
     }
   };
 
@@ -207,7 +211,7 @@ const ProductsPage = () => {
                   <span className="products-page-rating-number">| {product.rating || 0}</span>
                   <span className="products-page-sold-count">| {formatSoldCount(product.sold)}</span>
                 </div>
-                <div className="products-page-card-price">ETB {product.price.toFixed(2)}</div>
+                <div className="products-page-card-price">$ {product.price.toFixed(2)}</div>
                 <button
                   className="products-page-add-to-cart"
                   onClick={(e) => {

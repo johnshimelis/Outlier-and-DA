@@ -8,7 +8,7 @@ import tiktokIcon from '../images/assets/tiktok.png';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 
-const S3_BASE_URL = 'https://pa-gebeya-upload.s3.eu-north-1.amazonaws.com/';
+const S3_BASE_URL = 'https://outlier-da.s3.eu-north-1.amazonaws.com/';
 
 const ProductDetails = () => {
   const location = useLocation();
@@ -65,7 +65,7 @@ const ProductDetails = () => {
       try {
         console.log("Fetching related products for category:", product.category._id);
         const response = await axios.get(
-          `https://pa-gebeya-backend.onrender.com/api/products/category/${product.category._id}`
+          `https://outlier-and-da-backend.onrender.com/api/products/category/${product.category._id}`
         );
     
         console.log("API Response:", response);
@@ -112,62 +112,58 @@ const ProductDetails = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleAddToCart = async (productToAdd) => {
-    const userId = localStorage.getItem('userId');
-    const token = localStorage.getItem('token');
-
-    if (!userId || !token) {
-      toast.error('Please log in to add items to the cart');
-      navigate('/auth');
-      return;
-    }
-
-    if (!productToAdd) {
-      toast.error('Error: No product data available.');
-      return;
-    }
-
-    const productId = productToAdd._id;
-    if (!productId) {
-      console.error('Error: Product ID is undefined');
-      toast.error('Error adding item to cart: Product ID missing');
-      return;
-    }
-
-    const thumbnailImage = productToAdd.images?.[0] || productToAdd.photo;
-    const cartItem = {
-      userId,
-      productId,
-      productName: productToAdd.name,
-      price: productToAdd.price,
-      quantity: quantity,
-      img: getFullImageUrl(thumbnailImage),
-    };
-
-    try {
-      const response = await axios.post(
-        'https://pa-gebeya-backend.onrender.com/api/cart',
-        cartItem,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success(`${productToAdd.name} added to the cart!`);
-        const updatedCart = await axios.get('https://pa-gebeya-backend.onrender.com/api/cart', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setCartItems(updatedCart.data.items);
+    const handleAddToCart = async (product) => {
+      const token = localStorage.getItem("token");
+    
+      if (!token) {
+        toast.error("Please log in to add items to the cart");
+        return;
       }
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      toast.error(error.response?.data?.message || error.message);
-    }
-  };
+    
+      try {
+        const productId = product._id;
+        if (!productId) {
+          toast.error("Error adding item to cart: Product ID missing");
+          return;
+        }
+    
+        const cartItem = {
+          productId,
+          productName: product.name,
+          price: product.price,
+          quantity: 1,
+          img: product.imageUrls?.[0] || product.photo || '/default-product-image.jpg',
+        };
+    
+        const response = await axios.post(
+          "https://outlier-and-da-backend.onrender.com/api/cart",
+          cartItem,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+    
+        if (response.status === 200) {
+          toast.success(`${product.name} added to the cart!`);
+          // Optionally refresh cart items
+          const updatedCart = await axios.get(
+            "https://outlier-and-da-backend.onrender.com/api/cart",
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          setCartItems(updatedCart.data.items || []);
+        }
+      } catch (error) {
+        console.error("Add to cart error:", error);
+        toast.error(
+          error.response?.data?.error || 
+          error.response?.data?.message || 
+          "Failed to add item to cart"
+        );
+      }
+    };
 
   const handleQuantityChange = (delta) => {
     setQuantity((prevQuantity) => Math.max(1, prevQuantity + delta));
@@ -293,12 +289,12 @@ const ProductDetails = () => {
           <div className="price-display">
             {showDiscount ? (
               <div className="discounted-price">
-                <span className="current-price">{discountedPrice} ETB</span>
-                <span className="original-price">{originalPrice} ETB</span>
+                <span className="current-price">{discountedPrice} $</span>
+                <span className="original-price">{originalPrice} $</span>
               </div>
             ) : (
               <div className="regular-price">
-                <span className="price">{originalPrice} ETB</span>
+                <span className="price">{originalPrice} $</span>
               </div>
             )}
           </div>

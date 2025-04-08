@@ -14,7 +14,7 @@ const BestSeller = () => {
   useEffect(() => {
     const fetchBestSellers = async () => {
       try {
-        const response = await fetch("https://pa-gebeya-backend.onrender.com/api/products/bestsellers");
+        const response = await fetch("https://outlier-and-da-backend.onrender.com/api/products/bestsellers");
         if (!response.ok) {
           throw new Error("Failed to fetch best-selling products");
         }

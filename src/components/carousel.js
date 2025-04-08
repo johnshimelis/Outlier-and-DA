@@ -3,8 +3,8 @@ import axios from "axios";
 import "../styles/carousel1.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import carouselSecond1 from "../images/assets/carousel-second.png";
-import carouselSecond2 from "../images/assets/carousel-second1.png";
+import carouselSecond1 from "../images/assets/da.jpg";
+import carouselSecond2 from "../images/assets/outlier.png";
 
 const Carousel = () => {
   const [ads, setAds] = useState([]);
@@ -12,7 +12,7 @@ const Carousel = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await axios.get("https://pa-gebeya-backend.onrender.com/api/ads/ads");
+        const response = await axios.get("https://outlier-and-da-backend.onrender.com/api/ads/ads");
         setAds(response.data);
         
         // Initialize carousel after data loads
@@ -97,15 +97,11 @@ const Carousel = () => {
         <div className="nav-carousel-2">
           <div className="nav-carousel-img position-relative">
             <img src={carouselSecond1} alt="Secondary 1" />
-            <button className="shop-btn shop-btn-left">
-              Shop Men <span>&gt;</span>
-            </button>
+            
           </div>
           <div className="nav-carousel-img position-relative">
             <img src={carouselSecond2} alt="Secondary 2" />
-            <button className="shop-btn shop-btn-right">
-              <span>&lt;</span> Shop Women
-            </button>
+            
           </div>
         </div>
       </div>
